@@ -1,11 +1,11 @@
 import os
 import logging
-from fastapi import FastAPI, Request, HTTPException, UploadFile, File, Form
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 import uvicorn
 
-# Configure logging
+from src import session_manager, actions
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
@@ -15,7 +15,6 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -24,27 +23,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-async def root():
-    return {"message": "FastAPI async boilerplate is running."}
+app.include_router(session_manager.router, prefix="/session", tags=["Session"])
+app.include_router(actions.router, prefix="/action", tags=["Actions"])
 
-@app.post("/predict")
-async def predict(file: UploadFile = File(...)):
-    # Dummy async inference logic
-    content = await file.read()
-    logger.info(f"Received file of size {len(content)} bytes")
-    # Simulate async processing
-    # result = await some_async_inference_function(content)
-    result = {"prediction": "dummy_result"}
-    return JSONResponse(content=result)
-
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
-    logger.error(f"Unhandled error: {exc}")
-    return JSONResponse(
-        status_code=500,
-        content={"detail": "Internal server error"}
-    )
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=int(os.environ.get("PORT", 8000)), reload=True)

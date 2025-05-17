@@ -1,6 +1,6 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/iPRzcknB)
 # Assignment: Playwright Action API
-
+# uvicorn main:app --loop asyncio
 ## Objective
 
 Build a REST API service that exposes Playwright browser automation actions (e.g., `click`, `hover`, `fill`, etc.) as real-time HTTP endpoints. The system must support multiple browser sessions and return a screenshot after each action.

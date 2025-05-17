@@ -10,7 +10,6 @@ class BrowserManager:
             raise Exception("Invalid browser name. Supported browsers: chromium, firefox, webkit.")
         print(f"Starting {browser_name} session...")
         print(f"Headless mode: {headless}")
-        print(f"URL: {url}")
         playwright = await async_playwright().start()
         browser = await getattr(playwright, browser_name).launch(headless=headless)
         context = await browser.new_context()
@@ -30,14 +29,6 @@ class BrowserManager:
             "page": page
         }
         return session_id
-
-    @classmethod
-    async def start_multiple_sessions(cls, browser_name, headless, url=None, count=1):
-        session_ids = []
-        for _ in range(count):
-            session_id = await cls.start_session(browser_name, headless, url)
-            session_ids.append(session_id)
-        return session_ids
 
     @classmethod
     async def get_page(cls, session_id):
